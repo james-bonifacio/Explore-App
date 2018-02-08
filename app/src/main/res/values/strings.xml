@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Explore App</string>
+    <string name="next_button_string">Next</string>
 </resources>
