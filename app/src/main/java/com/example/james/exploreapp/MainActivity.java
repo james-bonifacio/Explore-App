@@ -11,6 +11,10 @@ import android.widget.Button;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -20,6 +24,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String city = "toronto";
 
-                new NetworkThread().execute(getRequestUrl(city));
+                new NetworkThread().execute(city);
 
             }
         });
@@ -48,17 +53,71 @@ public class MainActivity extends AppCompatActivity {
 
     private class NetworkThread extends AsyncTask<String, String, String> {
 
+        String words;
+
+
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         protected String doInBackground(String... params) {
 
-            HttpURLConnection connection = null;
-            BufferedReader reader = null;
+            //ArrayList<Location> locations = getLocations(getUrl(params[0]));
+            ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
+
+            for (Location location : locations) {
+
+                Log.i(TAG,location.getName());
+
+            }
+
+            return null;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+
+
+        }
+
+        protected ArrayList<Location> getLocations(String url) {
+
+            ArrayList<Location> locations = new ArrayList<Location>();
 
             try {
-                URL url = new URL(params[0]);
+
+                Document doc = Jsoup.connect(url).get();
+                words = doc.text();
+
+                Elements names = doc.select("div.listing_title > a");
+
+                for (Element name : names) {
+                    Location l = new Location();
+                    l.setName(name.text());
+                    locations.add(l);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+            return locations;
+        }//end getLocations
+
+        protected String getUrl(String requestUrl) {
+
+            HttpURLConnection connection = null;
+            BufferedReader reader = null;
+            String result = null;
+
+            try {
+
+                URL url = new URL(requestUrl);
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
@@ -73,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
                     buffer.append(line+"\n");
                 }
 
-                return buffer.toString();
+                result = buffer.toString();
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -91,12 +150,6 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
             }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
 
             JSONObject object = null;
             try {
@@ -113,10 +166,10 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            Log.i("url=" + TAG,url);
+            return url;
 
 
-        }
+        }//end getUrl
 
     }//end Network Thread
 
