@@ -40,14 +40,11 @@ public class MainActivity extends AppCompatActivity {
 
                 String city = "toronto";
 
-                new NetworkThread().execute("https://www.google.ca/search?q=site%3Atripadvisor.ca+" + city + "+things+to+do");
-
-
+                new NetworkThread().execute(getRequestUrl(city));
 
             }
         });
     }
-
 
     private class NetworkThread extends AsyncTask<String, String, String> {
 
@@ -65,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
                 connection = (HttpURLConnection) url.openConnection();
                 connection.connect();
 
-
                 InputStream stream = connection.getInputStream();
 
                 reader = new BufferedReader(new InputStreamReader(stream));
@@ -75,12 +71,9 @@ public class MainActivity extends AppCompatActivity {
 
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line+"\n");
-                    //Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
-
                 }
 
                 return buffer.toString();
-
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
@@ -105,12 +98,36 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            JSONObject object = null;
+            try {
+                object = new JSONObject(result);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
-            String res = result;
+            String url = null;
+
+            try {
+                url = (String)object.getJSONArray("items").getJSONObject(0).get("link");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            Log.i("url=" + TAG,url);
 
 
         }
-    }//Json Task 1
+
+    }//end Network Thread
+
+
+
+
+    private String getRequestUrl(String city) {
+        return "https://www.googleapis.com/customsearch/v1?q="+city+"+things+to+do&cx=005489561495639641028%3Aallb65ukzxo&num=1&key=AIzaSyBoiVEvK5X5IIgfdHDkFJZYYKaQzYi4Bsg";
+    }
+
+
 
 
 
