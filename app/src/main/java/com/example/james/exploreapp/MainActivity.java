@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -45,8 +46,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 String city = "ottawa";
-
-                new NetworkThread(MainActivity.this).execute(city);
+                new NetworkThread(MainActivity.this, view.getContext()).execute(city);
 
             }
         });
@@ -55,11 +55,12 @@ public class MainActivity extends AppCompatActivity {
     private class NetworkThread extends AsyncTask<String, String, ArrayList<Location>> {
 
         private ProgressDialog dialog;
+        Context context;
 
-        public NetworkThread(MainActivity activity) {
+        public NetworkThread(MainActivity activity, Context context) {
             dialog = new ProgressDialog(activity);
+            this.context = context.getApplicationContext();
         }
-
 
         protected void onPreExecute() {
             super.onPreExecute();
@@ -89,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
+
+            Intent i = new Intent(context, SwipeActivity.class);
+            i.putParcelableArrayListExtra("Locations", locations);
+            startActivity(i);
 
         }
 
@@ -186,10 +191,6 @@ public class MainActivity extends AppCompatActivity {
     private String getRequestUrl(String city) {
         return "https://www.googleapis.com/customsearch/v1?q="+city+"+things+to+do&cx=005489561495639641028%3Aallb65ukzxo&num=1&key=AIzaSyBoiVEvK5X5IIgfdHDkFJZYYKaQzYi4Bsg";
     }
-
-
-
-
 
 
 }
