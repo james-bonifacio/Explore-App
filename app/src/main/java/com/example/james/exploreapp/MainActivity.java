@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String city = "toronto";
+                String city = "ottawa";
 
                 new NetworkThread().execute(city);
 
@@ -51,36 +51,33 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private class NetworkThread extends AsyncTask<String, String, String> {
+    private class NetworkThread extends AsyncTask<String, String, ArrayList<Location>> {
 
-        String words;
 
 
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
-        protected String doInBackground(String... params) {
+        protected ArrayList<Location> doInBackground(String... params) {
 
-            //ArrayList<Location> locations = getLocations(getUrl(params[0]));
+            //ArrayList<Location> locations = getLocations(getUrl(getRequestUrl(params[0])));
             ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
 
-            for (Location location : locations) {
+            for (Location l : locations) {
 
-                Log.i(TAG,location.getName());
+                Log.i(TAG, "name=" + l.getName() +" tagline=" + l.getTagLine());
 
             }
 
-            return null;
+            return locations;
 
 
         }
 
         @Override
-        protected void onPostExecute(String result) {
-            super.onPostExecute(result);
-
-
+        protected void onPostExecute(ArrayList<Location> locations) {
+            super.onPostExecute(locations);
 
         }
 
@@ -91,14 +88,14 @@ public class MainActivity extends AppCompatActivity {
             try {
 
                 Document doc = Jsoup.connect(url).get();
-                words = doc.text();
 
-                Elements names = doc.select("div.listing_title > a");
+                Elements listings = doc.getElementsByClass("listing_details");
 
-                for (Element name : names) {
-                    Location l = new Location();
-                    l.setName(name.text());
-                    locations.add(l);
+                for (Element listing : listings) {
+
+                    Element name = listing.select("div.listing_title > a").first();
+                    Element tagLine = listing.select("div.tag_line > div > a > span").first();
+                    locations.add(new Location(name.text(), ((tagLine == null) ? "" : tagLine.text())));
                 }
 
             } catch (IOException e) {
@@ -151,6 +148,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+            //parse JSON
             JSONObject object = null;
             try {
                 object = new JSONObject(result);
@@ -172,8 +170,6 @@ public class MainActivity extends AppCompatActivity {
         }//end getUrl
 
     }//end Network Thread
-
-
 
 
     private String getRequestUrl(String city) {
