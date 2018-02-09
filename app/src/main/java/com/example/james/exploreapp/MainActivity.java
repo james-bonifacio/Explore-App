@@ -1,5 +1,6 @@
 package com.example.james.exploreapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -45,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String city = "ottawa";
 
-                new NetworkThread().execute(city);
+                new NetworkThread(MainActivity.this).execute(city);
 
             }
         });
@@ -53,10 +54,17 @@ public class MainActivity extends AppCompatActivity {
 
     private class NetworkThread extends AsyncTask<String, String, ArrayList<Location>> {
 
+        private ProgressDialog dialog;
+
+        public NetworkThread(MainActivity activity) {
+            dialog = new ProgressDialog(activity);
+        }
 
 
         protected void onPreExecute() {
             super.onPreExecute();
+            dialog.setMessage("Loading");
+            dialog.show();
         }
 
         protected ArrayList<Location> doInBackground(String... params) {
@@ -78,6 +86,9 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(ArrayList<Location> locations) {
             super.onPostExecute(locations);
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
 
         }
 
