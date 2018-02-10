@@ -22,9 +22,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -45,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String city = "ottawa";
+                String city = "toronto";
                 new NetworkThread(MainActivity.this, view.getContext()).execute(city);
 
             }
@@ -64,14 +66,14 @@ public class MainActivity extends AppCompatActivity {
 
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.setMessage("Loading");
+            dialog.setMessage("Loading, please wait...");
             dialog.show();
         }
 
         protected ArrayList<Location> doInBackground(String... params) {
 
-            //ArrayList<Location> locations = getLocations(getUrl(getRequestUrl(params[0])));
-            ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
+            ArrayList<Location> locations = getLocations(getUrl(getRequestUrl(params[0])));
+            //ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
 
             for (Location l : locations) {
 
@@ -110,8 +112,14 @@ public class MainActivity extends AppCompatActivity {
                 for (Element listing : listings) {
 
                     Element name = listing.select("div.listing_title > a").first();
-                    Element tagLine = listing.select("div.tag_line > div > a > span").first();
-                    locations.add(new Location(name.text(), ((tagLine == null) ? "" : tagLine.text())));
+
+                    if (!containsNumber(name.text())) {
+
+                        Element tagLine = listing.select("div.tag_line > div > a > span").first();
+                        locations.add(new Location(name.text(), ((tagLine == null) ? "" : tagLine.text())));
+                    }
+
+
                 }
 
             } catch (IOException e) {
@@ -189,7 +197,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     private String getRequestUrl(String city) {
-        return "https://www.googleapis.com/customsearch/v1?q="+city+"+things+to+do&cx=005489561495639641028%3Aallb65ukzxo&num=1&key=AIzaSyBoiVEvK5X5IIgfdHDkFJZYYKaQzYi4Bsg";
+        try {
+            return "https://www.googleapis.com/customsearch/v1?q="+ URLEncoder.encode(city, "UTF-8") +"+things+to+do&cx=005489561495639641028%3Aallb65ukzxo&num=1&key=AIzaSyBoiVEvK5X5IIgfdHDkFJZYYKaQzYi4Bsg";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private Boolean containsNumber (String str) {
+        return str.matches(".*\\d+.*");
     }
 
 

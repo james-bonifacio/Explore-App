@@ -24,10 +24,8 @@ public class SwipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_swipe);
-        ArrayList<Location> locations = this.getIntent().getParcelableArrayListExtra("Locations");
 
-
-        rowItems = locations;
+        rowItems = this.getIntent().getParcelableArrayListExtra("Locations");
 
         arrayAdapter = new LocationArrayAdapter(this, R.layout.item, rowItems );
 
