@@ -9,6 +9,7 @@ public class Location implements Parcelable{
     private String name;
     private String img;
     private String tagLine;
+    private String visited;
 
     public static final Parcelable.Creator<Location> CREATOR = new Parcelable.Creator<Location>() {
 
@@ -30,12 +31,14 @@ public class Location implements Parcelable{
     public Location(String name, String tagLine){
         this.name = name;
         this.tagLine = tagLine;
+        this.visited = "false";
     }
 
     public Location(Parcel parcel) {
         this.name = parcel.readString();
         this.img = parcel.readString();
         this.tagLine = parcel.readString();
+        this.visited = parcel.readString();
     }
 
 
@@ -74,6 +77,7 @@ public class Location implements Parcelable{
         parcel.writeString(this.name);
         parcel.writeString(this.img);
         parcel.writeString(this.tagLine);
+        parcel.writeString(this.visited);
 
     }
 }

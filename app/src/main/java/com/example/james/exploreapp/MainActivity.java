@@ -21,15 +21,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        btnNext = findViewById(R.id.button_next);
+        btnNext = (Button)findViewById(R.id.button_next);
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,8 +69,8 @@ public class MainActivity extends AppCompatActivity {
 
         protected ArrayList<Location> doInBackground(String... params) {
 
-            ArrayList<Location> locations = getLocations(getUrl(getRequestUrl(params[0])));
-            //ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
+            //ArrayList<Location> locations = getLocations(getUrl(getRequestUrl(params[0])));
+            ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
 
             for (Location l : locations) {
 
@@ -112,10 +109,10 @@ public class MainActivity extends AppCompatActivity {
                 for (Element listing : listings) {
 
                     Element name = listing.select("div.listing_title > a").first();
+                    Element tagLine = listing.select("div.tag_line > div > a > span").first();
 
-                    if (!containsNumber(name.text())) {
+                    if ( (!containsNumber(name.text())) && (name != null) && (tagLine != null) ) {
 
-                        Element tagLine = listing.select("div.tag_line > div > a > span").first();
                         locations.add(new Location(name.text(), ((tagLine == null) ? "" : tagLine.text())));
                     }
 

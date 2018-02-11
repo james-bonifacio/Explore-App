@@ -1,8 +1,11 @@
 package com.example.james.exploreapp;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -14,10 +17,9 @@ public class SwipeActivity extends AppCompatActivity {
 
 
     private LocationArrayAdapter arrayAdapter;
-    private int i;
 
-    private ListView listView;
-    ArrayList<Location> rowItems;
+    ArrayList<Location> rowItems, selected;
+    Button btnExplore, btnList;
 
 
     @Override
@@ -26,27 +28,42 @@ public class SwipeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_swipe);
 
         rowItems = this.getIntent().getParcelableArrayListExtra("Locations");
+        selected = new ArrayList<Location>();
+
+        btnExplore = (Button) findViewById(R.id.button_explore);
+        btnList = (Button) findViewById(R.id.button_list);
+
+        btnExplore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                Intent i = new Intent(view.getContext(), RouteActivity.class);
+                i.putParcelableArrayListExtra("Locations", selected);
+                startActivity(i);
+            }
+        });
+
+        btnList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
 
         arrayAdapter = new LocationArrayAdapter(this, R.layout.item, rowItems );
 
         SwipeFlingAdapterView flingContainer = (SwipeFlingAdapterView) findViewById(R.id.frame);
 
-
         flingContainer.setAdapter(arrayAdapter);
         flingContainer.setFlingListener(new SwipeFlingAdapterView.onFlingListener() {
             @Override
             public void removeFirstObjectInAdapter() {
-                // this is the simplest way to delete an object from the Adapter (/AdapterView)
-                //Log.d("LIST", "removed object!");
                 rowItems.remove(0);
                 arrayAdapter.notifyDataSetChanged();
             }
 
             @Override
             public void onLeftCardExit(Object dataObject) {
-                //Do something on the left!
-                //You also have access to the original object.
-                //If you want to use it just cast it (String) dataObject
 
                 Location obj = (Location) dataObject;
                 Toast.makeText(SwipeActivity.this, "left", Toast.LENGTH_SHORT).show();
@@ -55,16 +72,14 @@ public class SwipeActivity extends AppCompatActivity {
             @Override
             public void onRightCardExit(Object dataObject) {
                 Location obj = (Location) dataObject;
+                selected.add(obj);
                 Toast.makeText(SwipeActivity.this, "right", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onAdapterAboutToEmpty(int itemsInAdapter) {
                 // Ask for more data here
-                //al.add("XML ".concat(String.valueOf(i)));
                 arrayAdapter.notifyDataSetChanged();
-                //Log.d("LIST", "notified");
-                i++;
             }
 
             @Override
@@ -73,8 +88,6 @@ public class SwipeActivity extends AppCompatActivity {
             }
         });
 
-
-        // Optionally add an OnItemClickListener
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
