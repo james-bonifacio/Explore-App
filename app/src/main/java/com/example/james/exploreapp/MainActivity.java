@@ -32,11 +32,14 @@ public class MainActivity extends AppCompatActivity {
 
     private Button btnNext;
     private String TAG = MainActivity.class.getName();
+    String city;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        city = null;
 
 
         btnNext = (Button)findViewById(R.id.button_next);
@@ -44,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String city = "toronto";
-                new NetworkThread(MainActivity.this, view.getContext()).execute(city);
+                String input = "ottawa";
+                new NetworkThread(MainActivity.this, view.getContext()).execute(input);
 
             }
         });
@@ -92,6 +95,8 @@ public class MainActivity extends AppCompatActivity {
 
             Intent i = new Intent(context, SwipeActivity.class);
             i.putParcelableArrayListExtra("Locations", locations);
+            i.putExtra("City", city);
+
             startActivity(i);
 
         }
@@ -103,6 +108,8 @@ public class MainActivity extends AppCompatActivity {
             try {
 
                 Document doc = Jsoup.connect(url).get();
+
+                city = doc.getElementById("HEADING").text().substring(16);
 
                 Elements listings = doc.getElementsByClass("listing_details");
 

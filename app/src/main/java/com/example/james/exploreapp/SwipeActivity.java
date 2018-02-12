@@ -21,6 +21,8 @@ public class SwipeActivity extends AppCompatActivity {
     ArrayList<Location> rowItems, selected;
     Button btnExplore, btnList;
 
+    String city;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,8 @@ public class SwipeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_swipe);
 
         rowItems = this.getIntent().getParcelableArrayListExtra("Locations");
+        city = (String) this.getIntent().getExtras().get("City");
+
         selected = new ArrayList<Location>();
 
         btnExplore = (Button) findViewById(R.id.button_explore);
@@ -39,6 +43,7 @@ public class SwipeActivity extends AppCompatActivity {
 
                 Intent i = new Intent(view.getContext(), RouteActivity.class);
                 i.putParcelableArrayListExtra("Locations", selected);
+                i.putExtra("City", city);
                 startActivity(i);
             }
         });

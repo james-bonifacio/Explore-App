@@ -1,5 +1,7 @@
 package com.example.james.exploreapp;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -24,46 +26,60 @@ import java.util.Date;
 
 public class RouteActivity extends AppCompatActivity {
 
-
     //settings
-    private String city = "Toronto";
-    private int start = 1518407985;
+    private int time = 1517942615;
+    private int timeAtLocation = 7200;
+    private int locationsToAdd = 3;
+    private String mode = "transit";
+    private String startLocation;
+
+    //private String city;
+
+
     private String TAG = RouteActivity.class.getName();
+    private int numScheduled;
+    private String currOrigin;
+
+    private String[] departure = new String[locationsToAdd];
+    private String[] duration = new String[locationsToAdd];
+    private String[] arrival = new String[locationsToAdd];
+
+    private ArrayList<Location> locations;
+
+    private ProgressDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_route);
 
-        ArrayList<Location> locations = this.getIntent().getParcelableArrayListExtra("Locations");
+        dialog = new ProgressDialog(RouteActivity.this);
+        dialog.setMessage("Loading, please wait...");
+        dialog.show();
 
-        SimpleDateFormat sdf = new SimpleDateFormat("2009-09-22 16:47:08");
-        try {
-            Date d = sdf.parse("21/12/2012");
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        locations = this.getIntent().getParcelableArrayListExtra("Locations");
+        numScheduled = 0;
 
-        String boi = createURL(city, locations.get(0).getName(), start);
+        startLocation  = (String) this.getIntent().getExtras().get("City");
 
+        currOrigin = startLocation;
 
-        Log.i(TAG,"url = " + boi );
+        String url = createURL(startLocation, locations.get(0).getName(), time);
 
-
-
-        new JsonTask1().execute(createURL(city, locations.get(0).getName(), start) );
-
-
+        new JsonTask1().execute( url );
 
     }
 
     private class JsonTask1 extends AsyncTask<String, String, String> {
+
+
 
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         protected String doInBackground(String... params) {
+
 
 
             HttpURLConnection connection = null;
@@ -84,7 +100,6 @@ public class RouteActivity extends AppCompatActivity {
 
                 while ((line = reader.readLine()) != null) {
                     buffer.append(line + "\n");
-                    //Log.d("Response: ", "> " + line);   //here u ll get whole response...... :-)
 
                 }
 
@@ -121,31 +136,76 @@ public class RouteActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            String departure = null, duration = null, arrival = null;
+            String currDeparture = null, currDuration = null, currArrival = null;
+            int currTime = 0;
 
             try {
-                departure = (String)object.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("departure_time").get("text");
+                currDeparture = (String)object.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("departure_time").get("text");
             } catch (JSONException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
 
             try {
-                duration = (String)object.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("duration").get("text");
+                currDuration = (String)object.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("duration").get("text");
             } catch (JSONException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
 
             try {
-                arrival = (String)object.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("arrival_time").get("text");
+                currArrival = (String)object.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("arrival_time").get("text");
             } catch (JSONException e) {
-                e.printStackTrace();
+                //e.printStackTrace();
             }
 
-            Log.i(TAG, "departure=" + departure);
-            Log.i(TAG, "duration=" + duration);
-            Log.i(TAG, "arrival=" + arrival);
+            try {
+                currTime = (int)object.getJSONArray("routes").getJSONObject(0).getJSONArray("legs").getJSONObject(0).getJSONObject("arrival_time").get("value");
+            } catch (JSONException e) {
+                //e.printStackTrace();
+            }
+
+            Log.i(TAG, "departure=" + currDeparture);
+            Log.i(TAG, "duration=" + currDuration);
+            Log.i(TAG, "arrival=" + currArrival);
+
+            //if route exists
+            if ( (currDeparture != null) && (currDuration != null) && (currArrival != null) ) {
+
+                Log.i(TAG, "Route from " + currOrigin + " to " + locations.get(0).getName() + " exists.");
+
+                currOrigin = locations.get(0).getName();
+
+                departure[numScheduled] = currDeparture;
+                duration[numScheduled] = currDuration;
+                arrival[numScheduled] = currArrival;
+
+                time = currTime + timeAtLocation;
+
+                numScheduled++;
+
+            } else {
+
+                Log.i(TAG, "Route from " + currOrigin + " to " + locations.get(0).getName() + " doesnt exist.");
+
+            }
+
+            locations.remove(0);
+
+            if ( (!(locations.isEmpty())) && (numScheduled < locationsToAdd) ) {
+
+                String url = createURL(currOrigin, locations.get(0).getName(), time);
+
+                new JsonTask1().execute( url );
+
+            } else {
+                //finished
+
+                if (dialog.isShowing()) {
+                    dialog.dismiss();
+                }
+
+            }
 
 
         }
@@ -162,7 +222,11 @@ public class RouteActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        return "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&departure_time=" + departureTime + "&mode=transit&key=AIzaSyBU8yxgy0MpZD3DXkkf_c5Cm8fIEikM3i4";
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&departure_time=" + departureTime + "&mode=" + mode + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
+
+        Log.i(TAG,"url = " + url );
+
+        return url;
     }
 
 }
