@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 
 public class RouteActivity extends AppCompatActivity {
@@ -32,8 +33,6 @@ public class RouteActivity extends AppCompatActivity {
     private int locationsToAdd = 3;
     private String mode = "transit";
     private String startLocation;
-
-    //private String city;
 
 
     private String TAG = RouteActivity.class.getName();
@@ -58,6 +57,8 @@ public class RouteActivity extends AppCompatActivity {
         dialog.show();
 
         locations = this.getIntent().getParcelableArrayListExtra("Locations");
+        Collections.shuffle(locations);
+
         numScheduled = 0;
 
         startLocation  = (String) this.getIntent().getExtras().get("City");
@@ -66,20 +67,17 @@ public class RouteActivity extends AppCompatActivity {
 
         String url = createURL(startLocation, locations.get(0).getName(), time);
 
-        new JsonTask1().execute( url );
+        new DirectionTask().execute( url );
 
     }
 
-    private class JsonTask1 extends AsyncTask<String, String, String> {
-
-
+    private class DirectionTask extends AsyncTask<String, String, String> {
 
         protected void onPreExecute() {
             super.onPreExecute();
         }
 
         protected String doInBackground(String... params) {
-
 
 
             HttpURLConnection connection = null;
@@ -192,11 +190,12 @@ public class RouteActivity extends AppCompatActivity {
 
             locations.remove(0);
 
+            //if arraylist not empty and need more locations
             if ( (!(locations.isEmpty())) && (numScheduled < locationsToAdd) ) {
 
                 String url = createURL(currOrigin, locations.get(0).getName(), time);
 
-                new JsonTask1().execute( url );
+                new DirectionTask().execute( url );
 
             } else {
                 //finished
