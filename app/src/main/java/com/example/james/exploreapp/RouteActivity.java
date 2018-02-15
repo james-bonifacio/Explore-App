@@ -214,6 +214,7 @@ public class RouteActivity extends AppCompatActivity {
                 for (int i=0; i< (numScheduled + 1); i++) {
 
                     String name, tagline, rating, img, stay, travel, url, visited;
+                    Boolean first, last;
 
                     if (i == 0) {
 
@@ -225,6 +226,9 @@ public class RouteActivity extends AppCompatActivity {
                         travel = duration[0];
                         url = null;
                         visited = null;
+                        first = true;
+                        last = false;
+
 
                     }else if (i == numScheduled) {
 
@@ -236,6 +240,8 @@ public class RouteActivity extends AppCompatActivity {
                         travel = null;
                         url = null;
                         visited = scheduled.get(numScheduled - 1).getVisited();
+                        first = false;
+                        last = true;
 
                     } else {
 
@@ -247,10 +253,12 @@ public class RouteActivity extends AppCompatActivity {
                         travel = duration[i];
                         url = null;
                         visited = scheduled.get(i - 1).getVisited();
+                        first = false;
+                        last = false;
 
                     }
 
-                    Route curr = new Route(name, tagline, rating, img, stay, travel, url, visited);
+                    Route curr = new Route(name, tagline, rating, img, stay, travel, url, visited, first, last);
 
                     routes.add(curr);
 

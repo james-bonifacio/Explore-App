@@ -13,6 +13,8 @@ public class Route {
     private String travel;
     private String url;
     private String visited;
+    private boolean first;
+    private boolean last;
 
     public String getName() {
         return name;
@@ -42,11 +44,19 @@ public class Route {
         return travel;
     }
 
+    public boolean isFirst() {
+        return first;
+    }
+
+    public boolean isLast() {
+        return last;
+    }
+
     public String getUrl() {
         return url;
     }
 
-    public Route(String name, String tagline, String rating, String img, String stay, String travel, String url, String visited) {
+    public Route(String name, String tagline, String rating, String img, String stay, String travel, String url, String visited, boolean first, boolean last) {
         this.name = name;
         this.tagline = tagline;
         this.rating = rating;
@@ -55,5 +65,7 @@ public class Route {
         this.travel = travel;
         this.url = url;
         this.visited = visited;
+        this.first = first;
+        this.last = last;
     }
 }
