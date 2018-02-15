@@ -20,7 +20,7 @@
         android:elevation="2dp"
         android:id="@+id/cardView">
 
-        <FrameLayout
+        <RelativeLayout
             android:layout_gravity="center"
             android:layout_width="310dp"
             android:layout_height="450dp">
@@ -32,24 +32,31 @@
 
             <TextView
                 android:id="@+id/tvName"
-                android:textSize="40sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_above="@+id/tvTagline"
+                android:layout_alignStart="@+id/tvTagline"
                 android:textColor="@android:color/black"
-                android:gravity="center"
+                android:textSize="25sp"
+                android:textStyle="bold"
                 tools:text="Name"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                />
 
             <TextView
                 android:id="@+id/tvTagline"
-                tools:textSize="20sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="20dp"
+                android:layout_marginStart="20dp"
                 android:textColor="@android:color/black"
-                android:gravity="center"
                 tools:text="Tagline"
+                tools:textSize="20sp" />
 
-                android:layout_width="match_parent"
-                android:layout_height="40dp" />
-
-        </FrameLayout>
+        </RelativeLayout>
 
 
 
