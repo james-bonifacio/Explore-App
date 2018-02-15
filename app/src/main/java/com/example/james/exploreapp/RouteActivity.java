@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -28,12 +30,14 @@ import java.util.Date;
 public class RouteActivity extends AppCompatActivity {
 
     //settings
-    private int time = 1517942615;
+    private int time = 1518720413;
     private int timeAtLocation = 7200;
     private int locationsToAdd = 3;
     private String mode = "transit";
     private String startLocation;
 
+    RecyclerView recyclerView;
+    RouteAdapter adapter;
 
     private String TAG = RouteActivity.class.getName();
     private int numScheduled;
@@ -44,6 +48,7 @@ public class RouteActivity extends AppCompatActivity {
     private String[] arrival = new String[locationsToAdd];
 
     private ArrayList<Location> locations;
+    private ArrayList<Location> scheduled;
 
     private ProgressDialog dialog;
 
@@ -57,6 +62,8 @@ public class RouteActivity extends AppCompatActivity {
         dialog.show();
 
         locations = this.getIntent().getParcelableArrayListExtra("Locations");
+        scheduled = new ArrayList<Location>();
+
         Collections.shuffle(locations);
 
         numScheduled = 0;
@@ -180,11 +187,13 @@ public class RouteActivity extends AppCompatActivity {
 
                 time = currTime + timeAtLocation;
 
+                scheduled.add(locations.get(0));
+
                 numScheduled++;
 
             } else {
 
-                Log.i(TAG, "Route from " + currOrigin + " to " + locations.get(0).getName() + " doesnt exist.");
+                Log.i(TAG, "Route from " + currOrigin + " to " + locations.get(0).getName() + " doesn't exist.");
 
             }
 
@@ -200,30 +209,89 @@ public class RouteActivity extends AppCompatActivity {
             } else {
                 //finished
 
+                ArrayList<Route> routes = new ArrayList<Route>();
+
+                for (int i=0; i< (numScheduled + 1); i++) {
+
+                    String name, tagline, rating, img, stay, travel, url, visited;
+
+                    if (i == 0) {
+
+                        name = startLocation;
+                        tagline = null;
+                        rating = null;
+                        img = null;
+                        stay = departure[0];
+                        travel = duration[0];
+                        url = null;
+                        visited = null;
+
+                    }else if (i == numScheduled) {
+
+                        name = scheduled.get(numScheduled - 1).getName();
+                        tagline = scheduled.get(numScheduled - 1).getTagLine();
+                        rating = "4.2";
+                        img = null;
+                        stay = arrival[numScheduled - 1];
+                        travel = null;
+                        url = null;
+                        visited = scheduled.get(numScheduled - 1).getVisited();
+
+                    } else {
+
+                        name = scheduled.get(i - 1).getName();
+                        tagline = scheduled.get(i - 1).getTagLine();
+                        rating = "4.2";
+                        img = null;
+                        stay = arrival[i - 1] + " - " + departure[i];
+                        travel = duration[i];
+                        url = null;
+                        visited = scheduled.get(i - 1).getVisited();
+
+                    }
+
+                    Route curr = new Route(name, tagline, rating, img, stay, travel, url, visited);
+
+                    routes.add(curr);
+
+
+
+                }
+
+                recyclerView = (RecyclerView) findViewById(R.id.recycler_view2);
+                recyclerView.setHasFixedSize(true);
+
+                recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                adapter = new RouteAdapter(getApplicationContext(), routes );
+
+                recyclerView.setAdapter(adapter);
+
                 if (dialog.isShowing()) {
                     dialog.dismiss();
                 }
 
             }
 
-
-        }
+        }//post execute
     }//Json Task 1
 
     private String createURL(String origin, String destination, int departureTime) {
 
+        String orig = origin;
+        String dest = destination;
+
         try {
 
-            origin = URLEncoder.encode(origin, "UTF-8");
-            destination = URLEncoder.encode(destination, "UTF-8");
+            orig = URLEncoder.encode(origin, "UTF-8");
+            dest = URLEncoder.encode(destination, "UTF-8");
 
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
 
-        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + origin + "&destination=" + destination + "&departure_time=" + departureTime + "&mode=" + mode + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
+        String url = "https://maps.googleapis.com/maps/api/directions/json?origin=" + orig + "&destination=" + dest + "&departure_time=" + departureTime + "&mode=" + mode + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
 
-        Log.i(TAG,"url = " + url );
+        Log.i(TAG,origin + " -> " + destination + " " + url );
 
         return url;
     }

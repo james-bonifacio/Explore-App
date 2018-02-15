@@ -28,10 +28,10 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/image"/>
+                android:id="@+id/imgPicture"/>
 
             <TextView
-                android:id="@+id/name"
+                android:id="@+id/tvName"
                 android:textSize="40sp"
                 android:textColor="@android:color/black"
                 android:gravity="center"
@@ -40,7 +40,7 @@
                 android:layout_height="match_parent" />
 
             <TextView
-                android:id="@+id/tagline"
+                android:id="@+id/tvTagline"
                 tools:textSize="20sp"
                 android:textColor="@android:color/black"
                 android:gravity="center"

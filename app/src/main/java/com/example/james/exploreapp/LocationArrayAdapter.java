@@ -30,9 +30,9 @@ public class LocationArrayAdapter extends ArrayAdapter<Location> {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.item, parent, false);
         }
 
-        TextView name = (TextView) convertView.findViewById(R.id.name);
-        TextView tagline = (TextView) convertView.findViewById(R.id.tagline);
-        ImageView image = (ImageView) convertView.findViewById(R.id.image);
+        TextView name = (TextView) convertView.findViewById(R.id.tvName);
+        TextView tagline = (TextView) convertView.findViewById(R.id.tvTagline);
+        ImageView image = (ImageView) convertView.findViewById(R.id.imgPicture);
 
         name.setText(location.getName());
         tagline.setText(location.getTagLine());

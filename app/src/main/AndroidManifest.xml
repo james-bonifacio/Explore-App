@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".SwipeActivity" />
-        <activity android:name=".RouteActivity"></activity>
+        <activity android:name=".RouteActivity" />
+        <activity android:name=".ListActivity"></activity>
     </application>
 
 </manifest>

@@ -66,6 +66,15 @@ public class Location implements Parcelable{
         this.tagLine = tagLine;
     }
 
+    public void setVisited(String visited) {
+        this.visited = visited;
+    }
+
+    public String getVisited() {
+
+        return visited;
+    }
+
     @Override
     public int describeContents() {
         return 0;

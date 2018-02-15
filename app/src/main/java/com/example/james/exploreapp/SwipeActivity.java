@@ -52,6 +52,11 @@ public class SwipeActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                Intent i = new Intent(view.getContext(), ListActivity.class);
+                i.putParcelableArrayListExtra("Locations", selected);
+                i.putExtra("City", city);
+                startActivity(i);
+
             }
         });
 
