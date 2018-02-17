@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
-                String input = "ottawa";
+                String input = "montreal";
                 new NetworkThread(MainActivity.this, view.getContext()).execute(input);
 
             }

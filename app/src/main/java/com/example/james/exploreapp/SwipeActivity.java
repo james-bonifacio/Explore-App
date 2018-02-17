@@ -76,14 +76,14 @@ public class SwipeActivity extends AppCompatActivity {
             public void onLeftCardExit(Object dataObject) {
 
                 Location obj = (Location) dataObject;
-                Toast.makeText(SwipeActivity.this, "left", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SwipeActivity.this, "left", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onRightCardExit(Object dataObject) {
                 Location obj = (Location) dataObject;
                 selected.add(obj);
-                Toast.makeText(SwipeActivity.this, "right", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SwipeActivity.this, "right", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -101,7 +101,7 @@ public class SwipeActivity extends AppCompatActivity {
         flingContainer.setOnItemClickListener(new SwipeFlingAdapterView.OnItemClickListener() {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
-                Toast.makeText(SwipeActivity.this, "click", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(SwipeActivity.this, "click", Toast.LENGTH_SHORT).show();
             }
         });
 

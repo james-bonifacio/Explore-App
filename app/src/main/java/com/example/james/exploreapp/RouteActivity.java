@@ -33,7 +33,7 @@ public class RouteActivity extends AppCompatActivity {
     private int time = 1518720413;
     private int timeAtLocation = 7200;
     private int locationsToAdd = 3;
-    private String mode = "transit";
+    private String mode = "driving";
     private String startLocation;
 
     RecyclerView recyclerView;

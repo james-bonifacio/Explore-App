@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 /**
@@ -36,7 +38,11 @@ public class LocationArrayAdapter extends ArrayAdapter<Location> {
 
         name.setText(location.getName());
         tagline.setText(location.getTagLine());
-        image.setImageResource(R.mipmap.ic_launcher);
+
+        Glide
+            .with(getContext())
+            .load("https://lh3.googleusercontent.com/p/AF1QipOsScagqHmCNGnHMG4ZHy7IX2zz6XRX93vgWKqD=s1600-w400")
+            .into(image);
 
         return convertView;
 

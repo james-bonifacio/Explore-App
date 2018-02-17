@@ -5,8 +5,8 @@
     android:layout_gravity="center"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="40sp"
-    android:paddingRight="40sp"
+    android:paddingLeft="10sp"
+    android:paddingRight="10sp"
     android:paddingTop="20sp"
     android:paddingBottom="20sp"
     android:outlineProvider="bounds"
@@ -22,13 +22,14 @@
 
         <RelativeLayout
             android:layout_gravity="center"
-            android:layout_width="310dp"
+            android:layout_width="match_parent"
             android:layout_height="450dp">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/imgPicture"/>
+                android:id="@+id/imgPicture"
+                android:scaleType="centerCrop"/>
 
             <TextView
                 android:id="@+id/tvName"
@@ -50,8 +51,8 @@
 
                 android:layout_alignParentBottom="true"
                 android:layout_alignParentStart="true"
-                android:layout_marginBottom="20dp"
-                android:layout_marginStart="20dp"
+                android:layout_marginBottom="30dp"
+                android:layout_marginStart="30dp"
                 android:textColor="@android:color/black"
                 tools:text="Tagline"
                 tools:textSize="20sp" />
