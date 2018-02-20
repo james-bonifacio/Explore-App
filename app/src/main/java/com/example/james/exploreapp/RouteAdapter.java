@@ -12,6 +12,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 /**
@@ -45,8 +47,9 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
         Route route = routes.get(position);
         holder.tvName.setText(route.getName());
         holder.tvTagline.setText(route.getTagline());
-        holder.tvRating.setText("6.9");
-        //holder.imgPicture.setImageDrawable();
+        holder.tvRating.setText(route.getRating());
+
+
 
         if (route.getVisited() == "true") {
             holder.chkVisited.setChecked(true);
@@ -81,6 +84,11 @@ public class RouteAdapter extends RecyclerView.Adapter<RouteAdapter.RouteViewHol
             holder.tvDownArrow.setVisibility(View.GONE);
             holder.tvTravel.setVisibility(View.GONE);
         }
+
+        Glide
+            .with(mCtx)
+            .load(route.getImg())
+            .into(holder.imgPicture);
 
     }
 

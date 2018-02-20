@@ -38,7 +38,7 @@
 
                 android:layout_above="@+id/tvTagline"
                 android:layout_alignStart="@+id/tvTagline"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 android:textSize="25sp"
                 android:textStyle="bold"
                 tools:text="Name"
@@ -53,7 +53,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="30dp"
                 android:layout_marginStart="30dp"
-                android:textColor="@android:color/black"
+                android:textColor="@android:color/white"
                 tools:text="Tagline"
                 tools:textSize="20sp" />
 

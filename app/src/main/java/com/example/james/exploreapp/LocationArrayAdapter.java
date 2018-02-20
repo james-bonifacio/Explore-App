@@ -41,7 +41,7 @@ public class LocationArrayAdapter extends ArrayAdapter<Location> {
 
         Glide
             .with(getContext())
-            .load("https://lh3.googleusercontent.com/p/AF1QipOsScagqHmCNGnHMG4ZHy7IX2zz6XRX93vgWKqD=s1600-w400")
+            .load(location.getImg())
             .into(image);
 
         return convertView;

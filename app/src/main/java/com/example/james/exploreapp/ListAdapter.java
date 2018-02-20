@@ -9,6 +9,8 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.ArrayList;
 
 /**
@@ -41,7 +43,13 @@ public class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder
         Location location = locations.get(position);
         holder.tvName.setText(location.getName());
         holder.tvTagline.setText(location.getTagLine());
-        holder.tvRating.setText("6.9");
+        holder.tvRating.setText(location.getRating());
+
+        Glide
+            .with(mCtx)
+            .load(location.getImg())
+            .into(holder.imgPicture);
+
         //holder.imgPicture.setImageDrawable();
 
         if (location.getVisited() == "true") {

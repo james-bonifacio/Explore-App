@@ -30,10 +30,10 @@ import java.util.Date;
 public class RouteActivity extends AppCompatActivity {
 
     //settings
-    private int time = 1518720413;
+    private int time = 1519057057;
     private int timeAtLocation = 7200;
     private int locationsToAdd = 3;
-    private String mode = "driving";
+    private String mode = "transit";
     private String startLocation;
 
     RecyclerView recyclerView;
@@ -234,8 +234,8 @@ public class RouteActivity extends AppCompatActivity {
 
                         name = scheduled.get(numScheduled - 1).getName();
                         tagline = scheduled.get(numScheduled - 1).getTagLine();
-                        rating = "4.2";
-                        img = null;
+                        rating = scheduled.get(numScheduled - 1).getRating();
+                        img = scheduled.get(numScheduled - 1).getImg();
                         stay = arrival[numScheduled - 1];
                         travel = null;
                         url = null;
@@ -247,8 +247,8 @@ public class RouteActivity extends AppCompatActivity {
 
                         name = scheduled.get(i - 1).getName();
                         tagline = scheduled.get(i - 1).getTagLine();
-                        rating = "4.2";
-                        img = null;
+                        rating = scheduled.get(i - 1).getRating();
+                        img = scheduled.get(i - 1).getImg();
                         stay = arrival[i - 1] + " - " + departure[i];
                         travel = duration[i];
                         url = null;

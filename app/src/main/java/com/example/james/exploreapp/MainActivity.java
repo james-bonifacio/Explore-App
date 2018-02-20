@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -39,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        city = null;
+        city = "toronto";
+
 
 
         btnNext = (Button)findViewById(R.id.button_next);
@@ -72,8 +74,11 @@ public class MainActivity extends AppCompatActivity {
 
         protected ArrayList<Location> doInBackground(String... params) {
 
-            //ArrayList<Location> locations = getLocations(getUrl(getRequestUrl(params[0])));
-            ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
+
+            String placeUrl = getPlaceUrl("toronto");
+            Log.i(TAG, placeUrl);
+            ArrayList<Location> locations = getLocations(placeUrl);
+            //ArrayList<Location> locations = getLocations("https://www.tripadvisor.ca/Attractions-g155019-Activities-Toronto_Ontario.html");
 
             for (Location l : locations) {
 
@@ -101,40 +106,7 @@ public class MainActivity extends AppCompatActivity {
 
         }
 
-        protected ArrayList<Location> getLocations(String url) {
-
-            ArrayList<Location> locations = new ArrayList<Location>();
-
-            try {
-
-                Document doc = Jsoup.connect(url).get();
-
-                city = doc.getElementById("HEADING").text().substring(16);
-
-                Elements listings = doc.getElementsByClass("listing_details");
-
-                for (Element listing : listings) {
-
-                    Element name = listing.select("div.listing_title > a").first();
-                    Element tagLine = listing.select("div.tag_line > div > a > span").first();
-
-                    if ( (!containsNumber(name.text())) && (name != null) && (tagLine != null) ) {
-
-                        locations.add(new Location(name.text(), ((tagLine == null) ? "" : tagLine.text())));
-                    }
-
-
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-            return locations;
-        }//end getLocations
-
-        protected String getUrl(String requestUrl) {
+        protected ArrayList<Location> getLocations(String requestUrl) {
 
             HttpURLConnection connection = null;
             BufferedReader reader = null;
@@ -184,15 +156,64 @@ public class MainActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            String url = null;
+
+            JSONArray results = null;
 
             try {
-                url = (String)object.getJSONArray("items").getJSONObject(0).get("link");
+                results = object.getJSONArray("results");
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
-            return url;
+
+            ArrayList<Location> locations = new ArrayList<>();
+
+            for (int i=0; i<results.length(); i++) {
+
+                JSONObject res = null;
+
+                try {
+                    res = results.getJSONObject(i);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String name = null, rating = null, tagline = null, photoRef = null;
+
+                try {
+                    name = res.getString("name");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    rating = Double.toString(res.getDouble("rating"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                try {
+                    tagline = res.getJSONArray("types").getString(0);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                try {
+                    photoRef = res.getJSONArray("photos").getJSONObject(0).getString("photo_reference");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                String img = getImgUrl(photoRef);
+
+                Location l = new Location(name, img, tagline, rating);
+
+                locations.add(l);
+            }
+
+
+            return locations;
 
 
         }//end getUrl
@@ -200,9 +221,9 @@ public class MainActivity extends AppCompatActivity {
     }//end Network Thread
 
 
-    private String getRequestUrl(String city) {
+    private String getPlaceUrl(String city) {
         try {
-            return "https://www.googleapis.com/customsearch/v1?q="+ URLEncoder.encode(city, "UTF-8") +"+things+to+do&cx=005489561495639641028%3Aallb65ukzxo&num=1&key=AIzaSyBoiVEvK5X5IIgfdHDkFJZYYKaQzYi4Bsg";
+            return "https://maps.googleapis.com/maps/api/place/textsearch/json?query="+ URLEncoder.encode(city, "UTF-8") +"+things+to+do&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -210,9 +231,63 @@ public class MainActivity extends AppCompatActivity {
         return null;
     }
 
-    private Boolean containsNumber (String str) {
-        return str.matches(".*\\d+.*");
+    private String getImgUrl (String locationRef) {
+
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=" + locationRef + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
     }
+
+    private JSONObject getJson (String requestUrl) {
+
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
+        String result = null;
+
+        try {
+
+            URL url = new URL(requestUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+
+            InputStream stream = connection.getInputStream();
+
+            reader = new BufferedReader(new InputStreamReader(stream));
+
+            StringBuffer buffer = new StringBuffer();
+            String line = "";
+
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line+"\n");
+            }
+
+            result = buffer.toString();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //parse JSON
+        JSONObject object = null;
+        try {
+            object = new JSONObject(result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 
 }
