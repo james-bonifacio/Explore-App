@@ -236,9 +236,58 @@ public class MainActivity extends AppCompatActivity {
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=" + locationRef + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
     }
 
-    private Boolean containsNumber (String str) {
-        return str.matches(".*\\d+.*");
+    private JSONObject getJson (String requestUrl) {
+
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
+        String result = null;
+
+        try {
+
+            URL url = new URL(requestUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+
+            InputStream stream = connection.getInputStream();
+
+            reader = new BufferedReader(new InputStreamReader(stream));
+
+            StringBuffer buffer = new StringBuffer();
+            String line = "";
+
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line+"\n");
+            }
+
+            result = buffer.toString();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //parse JSON
+        JSONObject object = null;
+        try {
+            object = new JSONObject(result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
     }
+
 
 
 }
