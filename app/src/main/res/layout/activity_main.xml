@@ -6,11 +6,27 @@
     android:layout_height="match_parent"
     tools:context="com.example.james.exploreapp.MainActivity">
 
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp">
+
+        <fragment
+            android:id="@+id/place_autocomplete_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:name="com.google.android.gms.location.places.ui.PlaceAutocompleteFragment" />
+
+
+
+    </android.support.v7.widget.CardView>
+
     <Button
         android:id="@+id/button_next"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:text="@string/next_button_string" />
+        android:text="@string/next_button_string"
+        android:enabled="false"/>
 </RelativeLayout>

@@ -21,6 +21,9 @@
         <activity android:name=".SwipeActivity" />
         <activity android:name=".RouteActivity" />
         <activity android:name=".ListActivity"></activity>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw"/>
     </application>
 
 </manifest>
