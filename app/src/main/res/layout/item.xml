@@ -55,7 +55,7 @@
                 android:layout_marginStart="30dp"
                 android:textColor="@android:color/white"
                 tools:text="Tagline"
-                tools:textSize="20sp" />
+                tools:textSize="23sp" />
 
         </RelativeLayout>
 
