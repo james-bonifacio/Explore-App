@@ -8,10 +8,39 @@
     tools:context="com.example.james.exploreapp.DescriptionActivity"
     tools:showIn="@layout/activity_description">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:text="@string/large_text" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.ms.square.android.expandabletextview.ExpandableTextView
+            android:id="@+id/expandable_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#EFF0F2"
+            app:maxCollapsedLines="4"
+            app:animDuration="200">
+
+            <TextView
+                android:id="@+id/expandable_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="8dp"
+                android:textColor="#666"
+                android:background="#EFF0F2"
+                android:textSize="16sp"/>
+
+            <ImageButton
+                android:id="@+id/expand_collapse"
+                android:layout_gravity="right|bottom"
+                android:padding="16dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#EFF0F2"/>
+
+        </com.ms.square.android.expandabletextview.ExpandableTextView>
+    </ScrollView>
+
 
 </android.support.v4.widget.NestedScrollView>

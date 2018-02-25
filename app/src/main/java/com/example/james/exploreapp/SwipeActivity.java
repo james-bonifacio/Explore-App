@@ -102,8 +102,9 @@ public class SwipeActivity extends AppCompatActivity {
             @Override
             public void onItemClicked(int itemPosition, Object dataObject) {
                 //Toast.makeText(SwipeActivity.this, "click", Toast.LENGTH_SHORT).show();
+                Location obj = (Location) dataObject;
                 Intent i = new Intent(getApplicationContext(), DescriptionActivity.class);
-                i.putParcelableArrayListExtra("Locations", selected);
+                i.putExtra("Location", obj);
                 i.putExtra("City", city);
                 startActivity(i);
             }

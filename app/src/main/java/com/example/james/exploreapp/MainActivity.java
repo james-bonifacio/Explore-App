@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                String name = null, rating = null, tagline = null, photoRef = null;
+                String name = null, rating = null, tagline = null, photoRef = null, placeId = null, isOpen = null;
 
                 try {
                     name = res.getString("name");
@@ -164,6 +164,22 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
+                Boolean isOpenBoolean = false;
+
+                try {
+                    isOpenBoolean = res.getJSONObject("opening_hours").getBoolean("open_now");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                isOpen = isOpenBoolean ? "true" : "false";
+
+
+                try {
+                    placeId = res.getString("place_id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
 
                 try {
                     tagline = res.getJSONArray("types").getString(0);
@@ -181,7 +197,7 @@ public class MainActivity extends AppCompatActivity {
 
                 String img = getImgUrl(photoRef);
 
-                Location l = new Location(name, img, tagline, rating);
+                Location l = new Location(name, img, tagline, rating, isOpen, placeId);
 
                 locations.add(l);
             }
