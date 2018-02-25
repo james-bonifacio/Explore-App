@@ -20,10 +20,16 @@
         </activity>
         <activity android:name=".SwipeActivity" />
         <activity android:name=".RouteActivity" />
-        <activity android:name=".ListActivity"></activity>
+        <activity android:name=".ListActivity" />
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw"/>
+            android:value="AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw" />
+
+        <activity
+            android:name=".DescriptionActivity"
+            android:label="@string/title_activity_description"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
