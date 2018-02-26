@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
 
         protected ArrayList<Location> getLocations(String requestUrl) {
 
-            JSONObject object = getJson(requestUrl);
+            JSONObject object = requestJson(requestUrl);
             JSONArray results = null;
 
             try {
@@ -235,7 +235,7 @@ public class MainActivity extends AppCompatActivity {
         return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=" + locationRef + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
     }
 
-    private JSONObject getJson (String requestUrl) {
+    private JSONObject requestJson (String requestUrl) {
 
         HttpURLConnection connection = null;
         BufferedReader reader = null;

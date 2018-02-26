@@ -27,6 +27,10 @@ public class Location implements Parcelable{
         }
     };
 
+    public String getPlaceId() {
+        return placeId;
+    }
+
     public Location() {
         super();
     }

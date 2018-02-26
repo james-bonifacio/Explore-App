@@ -1,18 +1,50 @@
 package com.example.james.exploreapp;
 
+import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+
 public class DescriptionActivity extends AppCompatActivity {
 
     ExpandableTextView expandableTextView;
-    String description = "The CN Tower is a National icon, engineering Wonder, a Toronto must-see attraction and award winning dining and entertainment destination. Rocket to the top aboard the Tower's glass fronted and glass floor paneled elevators which take you to the top in only 58 seconds. Take in spectacular views of up to 160km (100 miles) away from four observation areas on three levels, including the LookOut, world famous Glass Floor with outdoor SkyTerrace and the SkyPod, the highest of them all. Experience the thrill of EdgeWalk at the CN Tower, the World's Highest Outdoor Walk on a Building. Enjoy award-winning Canadian cuisine and breathtaking revolving views at 360 The Restaurant at the CN Tower, family friendly fare at Horizons Toronto celebrating the multicultural flavours of Toronto neighbourhoods, or grab and go fare from Le Café. Plus, visual displays, KidZone play area and 8,000 square feet of unique Canadian artisan and souvenir shopping in the Gift Shop. Don't miss the architectural illumination of the CN Tower each night from dusk with top of the hour light show.";
+    String placeId;
+
+    String name, description, rating, address, phoneNumber, website;
+    ArrayList<String> images = new ArrayList<>();
+    ArrayList<String> openingHours = new ArrayList<>();
+    Boolean openNow;
+
+
+    private String TAG = MainActivity.class.getName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +56,252 @@ public class DescriptionActivity extends AppCompatActivity {
 
         Location location = getIntent().getExtras().getParcelable("Location");
 
-        Location test = location;
-
         expandableTextView = (ExpandableTextView)findViewById(R.id.expandable_text_view);
         expandableTextView.setText(description);
 
+
+        name = location.getName();
+        rating = location.getRating();
+        placeId = location.getPlaceId();
+
+        String customSearchUrl = generateCustomSearchUrl(location.getName());
+
+        new NetworkThread(DescriptionActivity.this, getApplicationContext()).execute();
+
+
+    }
+
+    private class NetworkThread extends AsyncTask<String, String, String> {
+
+        private ProgressDialog dialog;
+        Context context;
+
+        public NetworkThread(DescriptionActivity activity, Context context) {
+            dialog = new ProgressDialog(activity);
+            this.context = context.getApplicationContext();
+        }
+
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setMessage("Loading, please wait...");
+            dialog.show();
+        }
+
+        protected String doInBackground(String... params) {
+
+
+            //get data from places api
+            String placeDetailsUrl = generatePlaceDetailsUrl(placeId);
+            parsePlaceDetails(placeDetailsUrl);
+
+
+            return null;
+
+
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
+            
+        }
+
+
+    }//end Network Thread
+
+    private String generateCustomSearchUrl(String locationName) {
+
+        String url = null;
+
+        try {
+            url = "https://www.googleapis.com/customsearch/v1?q="+ URLEncoder.encode(locationName, "UTF-8") +"&cx=005489561495639641028%3Aallb65ukzxo&num=1&key=AIzaSyBoiVEvK5X5IIgfdHDkFJZYYKaQzYi4Bsg";
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, "Custom Search Url: " + url);
+
+        return url;
+    }
+
+    private String generatePlaceDetailsUrl(String placeId) {
+        String url = "https://maps.googleapis.com/maps/api/place/details/json?placeid=" + placeId + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
+        Log.i(TAG, "Place Details Url: " + url);
+
+        return  url;
+    }
+
+    private String getWebPageUrl(String customSearchUrl) {
+
+        JSONObject res = requestJson(customSearchUrl);
+
+        String url = null;
+
+        try {
+            url = (String)res.getJSONArray("items").getJSONObject(0).get("link");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        Log.i(TAG, "Webpage to Scrape Url: " + url);
+
+        return url;
+    }
+
+    private void parsePlaceDetails(String url) {
+
+        JSONObject res = null;
+        try {
+            res = requestJson(url).getJSONObject("result");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+        JSONArray imageJson = null;
+        try {
+            imageJson = res.getJSONArray("photos");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        for (int i=0; i<imageJson.length(); i++) {
+
+            String imageUrl = null;
+            try {
+                imageUrl = imageJson.getJSONObject(i).getString("photo_reference");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            images.add(imageUrl);
+        }
+
+        JSONArray hoursJson = null;
+        try {
+            hoursJson = res.getJSONObject("opening_hours").getJSONArray("weekday_text");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        for (int i=0; i<hoursJson.length(); i++) {
+
+            String hours = null;
+            try {
+                hours = hoursJson.getString(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            openingHours.add(hours);
+        }
+
+        try {
+            address = res.getString("formatted_address");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            phoneNumber = res.getString("formatted_phone_number");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            website = res.getString("website");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            openNow = res.getJSONObject("opening_hours").getBoolean("open_now");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void scrapeWebPage(String url) {
+
+        ArrayList<Location> locations = new ArrayList<Location>();
+
+        try {
+
+            Document doc = Jsoup.connect(url).get();
+
+            //city = doc.getElementById("HEADING").text().substring(16);
+
+            Elements listings = doc.getElementsByClass("listing_details");
+
+            for (Element listing : listings) {
+
+                Element name = listing.select("div.listing_title > a").first();
+                Element tagLine = listing.select("div.tag_line > div > a > span").first();
+
+
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private JSONObject requestJson (String requestUrl) {
+
+        HttpURLConnection connection = null;
+        BufferedReader reader = null;
+        String result = null;
+
+        try {
+
+            URL url = new URL(requestUrl);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.connect();
+
+            InputStream stream = connection.getInputStream();
+
+            reader = new BufferedReader(new InputStreamReader(stream));
+
+            StringBuffer buffer = new StringBuffer();
+            String line = "";
+
+            while ((line = reader.readLine()) != null) {
+                buffer.append(line+"\n");
+            }
+
+            result = buffer.toString();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null) {
+                connection.disconnect();
+            }
+            try {
+                if (reader != null) {
+                    reader.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        //parse JSON
+        JSONObject object = null;
+        try {
+            object = new JSONObject(result);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return object;
 
     }
 
