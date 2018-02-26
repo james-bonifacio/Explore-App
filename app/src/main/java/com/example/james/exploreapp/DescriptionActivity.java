@@ -38,10 +38,15 @@ public class DescriptionActivity extends AppCompatActivity {
     ExpandableTextView expandableTextView;
     String placeId;
 
-    String name, description, rating, address, phoneNumber, website;
+    //from Places api
+    String name, rating, address, phoneNumber, website;
     ArrayList<String> images = new ArrayList<>();
     ArrayList<String> openingHours = new ArrayList<>();
     Boolean openNow;
+
+    //from web scrape
+    String description, numReviews, suggestedDuration;
+    ArrayList<String> categgitories = new ArrayList<>();
 
 
     private String TAG = MainActivity.class.getName();
@@ -63,8 +68,6 @@ public class DescriptionActivity extends AppCompatActivity {
         name = location.getName();
         rating = location.getRating();
         placeId = location.getPlaceId();
-
-        String customSearchUrl = generateCustomSearchUrl(location.getName());
 
         new NetworkThread(DescriptionActivity.this, getApplicationContext()).execute();
 
@@ -93,7 +96,11 @@ public class DescriptionActivity extends AppCompatActivity {
             //get data from places api
             String placeDetailsUrl = generatePlaceDetailsUrl(placeId);
             parsePlaceDetails(placeDetailsUrl);
+            String customSearchUrl = generateCustomSearchUrl(name);
+            String webPageUrl = getWebPageUrl(customSearchUrl);
+            scrapeWebPage(webPageUrl);
 
+            String shit = name;
 
             return null;
 
@@ -106,7 +113,7 @@ public class DescriptionActivity extends AppCompatActivity {
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
-            
+
         }
 
 
@@ -226,28 +233,24 @@ public class DescriptionActivity extends AppCompatActivity {
 
     private void scrapeWebPage(String url) {
 
-        ArrayList<Location> locations = new ArrayList<Location>();
-
+        Document doc = null;
         try {
-
-            Document doc = Jsoup.connect(url).get();
-
-            //city = doc.getElementById("HEADING").text().substring(16);
-
-            Elements listings = doc.getElementsByClass("listing_details");
-
-            for (Element listing : listings) {
-
-                Element name = listing.select("div.listing_title > a").first();
-                Element tagLine = listing.select("div.tag_line > div > a > span").first();
-
-
-            }
+            doc = Jsoup.connect(url).get();
 
         } catch (IOException e) {
             e.printStackTrace();
         }
 
+            description = doc.select("div.description > div.text").text();
+            numReviews = doc.select("a.seeAllReviews").text();
+            suggestedDuration = doc.select("div.detail_section.duration").text();
+
+            Elements categoriesToParse = doc.select("span.header_detail.attraction_details > div.detail > a");
+
+            for (Element e : categoriesToParse) {
+                String category = e.text();
+                categories.add(category);
+            }
 
     }
 
