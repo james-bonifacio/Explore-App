@@ -11,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.RatingBar;
+import android.widget.TextView;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
@@ -35,18 +37,21 @@ import java.util.ArrayList;
 
 public class DescriptionActivity extends AppCompatActivity {
 
-    ExpandableTextView expandableTextView;
-    String placeId;
+    private ExpandableTextView expandableTextView;
+    private TextView tvName, tvRating, tvNumReviews, tvOpen, tvAddress, tvPhoneNumber, tvWebsite;
+    private RatingBar rbRating;
+
+    private String placeId;
 
     //from Places api
-    String name, rating, address, phoneNumber, website;
-    ArrayList<String> images = new ArrayList<>();
-    ArrayList<String> openingHours = new ArrayList<>();
-    Boolean openNow;
+    private String name, rating, address, phoneNumber, website;
+    private ArrayList<String> images = new ArrayList<>();
+    private ArrayList<String> openingHours = new ArrayList<>();
+    private Boolean openNow;
 
     //from web scrape
-    String description, numReviews, suggestedDuration;
-    ArrayList<String> categgitories = new ArrayList<>();
+    private String description, numReviews, suggestedDuration;
+    private ArrayList<String> categories = new ArrayList<>();
 
 
     private String TAG = MainActivity.class.getName();
@@ -60,9 +65,6 @@ public class DescriptionActivity extends AppCompatActivity {
 
 
         Location location = getIntent().getExtras().getParcelable("Location");
-
-        expandableTextView = (ExpandableTextView)findViewById(R.id.expandable_text_view);
-        expandableTextView.setText(description);
 
 
         name = location.getName();
@@ -99,9 +101,6 @@ public class DescriptionActivity extends AppCompatActivity {
             String customSearchUrl = generateCustomSearchUrl(name);
             String webPageUrl = getWebPageUrl(customSearchUrl);
             scrapeWebPage(webPageUrl);
-
-            String shit = name;
-
             return null;
 
 
@@ -110,6 +109,9 @@ public class DescriptionActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
+
+            displayData();
+
             if (dialog.isShowing()) {
                 dialog.dismiss();
             }
@@ -118,6 +120,32 @@ public class DescriptionActivity extends AppCompatActivity {
 
 
     }//end Network Thread
+
+    private void displayData() {
+
+        tvName = (TextView) findViewById(R.id.name_text_view);
+        tvRating = (TextView) findViewById(R.id.rating_text_view);
+        tvNumReviews = (TextView) findViewById(R.id.number_reviews_text_view);
+        tvOpen = (TextView) findViewById(R.id.open_text_view);
+        tvAddress = (TextView) findViewById(R.id.address_text_view);
+        tvPhoneNumber = (TextView) findViewById(R.id.phone_number_text_view);
+        tvWebsite = (TextView) findViewById(R.id.website_text_view);
+
+        tvName.setText(name);
+        tvRating.setText(rating);
+        tvNumReviews.setText(numReviews);
+        tvOpen.setText(openNow ? "OPEN NOW" : "CLOSED NOW");
+        tvAddress.setText(address);
+        tvPhoneNumber.setText(phoneNumber);
+        tvWebsite.setText(website);
+
+        expandableTextView = (ExpandableTextView)findViewById(R.id.expandable_text_view);
+        expandableTextView.setText(description);
+
+        rbRating = (RatingBar) findViewById(R.id.rating_rating_bar);
+        rbRating.setRating(Float.parseFloat(rating));
+
+    }
 
     private String generateCustomSearchUrl(String locationName) {
 
