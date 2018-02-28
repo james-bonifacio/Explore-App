@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.TwoStatePreference;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -38,7 +39,7 @@ import java.util.ArrayList;
 public class DescriptionActivity extends AppCompatActivity {
 
     private ExpandableTextView expandableTextView;
-    private TextView tvName, tvRating, tvNumReviews, tvOpen, tvAddress, tvPhoneNumber, tvWebsite;
+    private TextView tvName, tvRating, tvNumReviews, tvOpen, tvSuggestedDuration, tvAddress, tvPhoneNumber, tvWebsite;
     private RatingBar rbRating;
 
     private String placeId;
@@ -127,6 +128,7 @@ public class DescriptionActivity extends AppCompatActivity {
         tvRating = (TextView) findViewById(R.id.rating_text_view);
         tvNumReviews = (TextView) findViewById(R.id.number_reviews_text_view);
         tvOpen = (TextView) findViewById(R.id.open_text_view);
+        tvSuggestedDuration = (TextView) findViewById(R.id.suggested_duration_text_view);
         tvAddress = (TextView) findViewById(R.id.address_text_view);
         tvPhoneNumber = (TextView) findViewById(R.id.phone_number_text_view);
         tvWebsite = (TextView) findViewById(R.id.website_text_view);
@@ -135,6 +137,7 @@ public class DescriptionActivity extends AppCompatActivity {
         tvRating.setText(rating);
         tvNumReviews.setText(numReviews);
         tvOpen.setText(openNow ? "OPEN NOW" : "CLOSED NOW");
+        tvSuggestedDuration.setText(suggestedDuration);
         tvAddress.setText(address);
         tvPhoneNumber.setText(phoneNumber);
         tvWebsite.setText(website);

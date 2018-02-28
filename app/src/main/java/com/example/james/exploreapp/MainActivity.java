@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String getImgUrl (String locationRef) {
 
-        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1080&photoreference=" + locationRef + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1440&photoreference=" + locationRef + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
     }
 
     private JSONObject requestJson (String requestUrl) {

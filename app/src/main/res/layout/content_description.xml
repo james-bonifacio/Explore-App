@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:textSize="20sp"
+            android:textSize="24sp"
             android:text="CN Tower"
             android:textColor="#000000"/>
 
@@ -26,7 +26,7 @@
             android:id="@+id/rating_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="4.6"
             android:textColor="#ff7400"
             android:layout_marginLeft="10dp"
@@ -50,7 +50,7 @@
             android:id="@+id/number_reviews_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="12sp"
+            android:textSize="14sp"
             android:text="19,621 reviews"
             android:textColor="#696969"
             android:layout_marginLeft="10dp"
@@ -81,6 +81,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:background="#EFF0F2"
                     android:textColor="#666"
                     android:textSize="14sp" />
