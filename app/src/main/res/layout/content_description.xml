@@ -102,16 +102,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/scroll_view_scroll_view"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="30dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:id="@+id/open_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_below="@id/map_view_map_view"
             android:text="OPEN NOW"/>
 
@@ -119,7 +117,8 @@
             android:id="@+id/suggested_duration_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_below="@+id/open_text_view"
             android:text="Suggested Duration: 1-2 hours"
             android:textSize="14sp"/>
@@ -128,7 +127,8 @@
             android:id="@+id/address_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_below="@+id/suggested_duration_text_view"
             android:text="301 Front St W, Toronto, ON M5v 2T6, Canada"
             android:textSize="14sp"/>
@@ -137,7 +137,8 @@
             android:id="@+id/phone_number_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_below="@id/address_text_view"
             android:text="(416) 868-6937"
             android:textSize="14sp"/>
@@ -146,7 +147,8 @@
             android:id="@+id/website_text_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginBottom="5dp"
             android:layout_below="@id/phone_number_text_view"
             android:text="http://www.cntower.ca"
             android:textSize="14sp"/>
