@@ -97,12 +97,13 @@
             </com.ms.square.android.expandabletextview.ExpandableTextView>
         </ScrollView>
 
-        <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view_map_view"
+        <fragment
+            android:id="@+id/map"
+            android:layout_margin="20dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/scroll_view_scroll_view"
-            android:layout_centerHorizontal="true" />
+            android:layout_height="200dp"
+            android:layout_below="@id/scroll_view_scroll_view"
+            class="com.google.android.gms.maps.MapFragment" />
 
         <TextView
             android:id="@+id/open_text_view"
@@ -110,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginBottom="5dp"
-            android:layout_below="@id/map_view_map_view"
+            android:layout_below="@id/map"
             android:text="OPEN NOW"/>
 
         <TextView

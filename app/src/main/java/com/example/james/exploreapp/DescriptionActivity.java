@@ -15,6 +15,14 @@ import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 
 import org.json.JSONArray;
@@ -36,7 +44,7 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-public class DescriptionActivity extends AppCompatActivity {
+public class DescriptionActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private ExpandableTextView expandableTextView;
     private TextView tvName, tvRating, tvNumReviews, tvOpen, tvSuggestedDuration, tvAddress, tvPhoneNumber, tvWebsite;
@@ -49,10 +57,14 @@ public class DescriptionActivity extends AppCompatActivity {
     private ArrayList<String> images = new ArrayList<>();
     private ArrayList<String> openingHours = new ArrayList<>();
     private Boolean openNow;
+    private Double lat, lng;
 
     //from web scrape
     private String description, numReviews, suggestedDuration;
     private ArrayList<String> categories = new ArrayList<>();
+
+    GoogleMap googleMap;
+    MapFragment mapFragment;
 
 
     private String TAG = MainActivity.class.getName();
@@ -74,6 +86,30 @@ public class DescriptionActivity extends AppCompatActivity {
 
         new NetworkThread(DescriptionActivity.this, getApplicationContext()).execute();
 
+
+
+    }
+
+    @Override
+    public void onMapReady(GoogleMap map) {
+
+        Log.i(TAG, "Latitude: " + lat + ", Longitude: " + lng);
+
+        googleMap = map;
+        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+
+        //Edit the following as per you needs
+        googleMap.setTrafficEnabled(true);
+        googleMap.setIndoorEnabled(true);
+        googleMap.setBuildingsEnabled(true);
+        googleMap.getUiSettings().setZoomControlsEnabled(true);
+        //
+
+        LatLng placeLocation = new LatLng(lat, lng); //Make them global
+        Marker placeMarker = googleMap.addMarker(new MarkerOptions().position(placeLocation)
+                .title(name));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(placeLocation));
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 1000, null);
 
     }
 
@@ -147,6 +183,10 @@ public class DescriptionActivity extends AppCompatActivity {
 
         rbRating = (RatingBar) findViewById(R.id.rating_rating_bar);
         rbRating.setRating(Float.parseFloat(rating));
+
+        mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
 
     }
 
@@ -255,6 +295,18 @@ public class DescriptionActivity extends AppCompatActivity {
 
         try {
             openNow = res.getJSONObject("opening_hours").getBoolean("open_now");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            lat = res.getJSONObject("geometry").getJSONObject("location").getDouble("lat");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            lng = res.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
         } catch (JSONException e) {
             e.printStackTrace();
         }
