@@ -109,7 +109,7 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
         Marker placeMarker = googleMap.addMarker(new MarkerOptions().position(placeLocation)
                 .title(name));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(placeLocation));
-        googleMap.animateCamera(CameraUpdateFactory.zoomTo(10), 1000, null);
+        googleMap.animateCamera(CameraUpdateFactory.zoomTo(13), 1000, null);
 
     }
 

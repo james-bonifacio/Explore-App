@@ -90,7 +90,7 @@
                     android:id="@+id/expand_collapse"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="right|bottom"
+                    android:layout_gravity="bottom|center_horizontal"
                     android:background="#EFF0F2"
                     android:padding="16dp" />
 
