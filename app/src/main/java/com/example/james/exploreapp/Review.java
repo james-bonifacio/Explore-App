@@ -20,7 +20,11 @@ public class Review {
         this.rating = rating;
     }
 
+    public Review() {
+    }
+
     public String getName() {
+
         return name;
     }
 

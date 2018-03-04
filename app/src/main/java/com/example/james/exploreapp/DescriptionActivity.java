@@ -56,6 +56,7 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
     private String name, rating, address, phoneNumber, website;
     private ArrayList<String> images = new ArrayList<>();
     private ArrayList<String> openingHours = new ArrayList<>();
+    private ArrayList<Review> reviews = new ArrayList<>();
     private Boolean openNow;
     private Double lat, lng;
 
@@ -310,6 +311,42 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+        try {
+            lng = res.getJSONObject("geometry").getJSONObject("location").getDouble("lng");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JSONArray reviewsJSON = null;
+        try {
+            reviewsJSON = res.getJSONArray("reviews");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        for (int i=0; i<reviewsJSON.length(); i++) {
+
+            Review review = new Review();
+
+
+            String text = null;
+            try {
+                text = reviewsJSON.getJSONObject(i).getString("text");
+                review.setText(text);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+            reviews.add(review);
+
+
+
+        }
+
+
 
 
     }
