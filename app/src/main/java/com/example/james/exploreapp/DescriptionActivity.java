@@ -3,6 +3,7 @@ package com.example.james.exploreapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Rating;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.TwoStatePreference;
@@ -189,6 +190,8 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        ArrayList<Review> fuck = reviews;
+
     }
 
     private String generateCustomSearchUrl(String locationName) {
@@ -238,7 +241,6 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
 
         JSONArray imageJson = null;
         try {
@@ -330,24 +332,58 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
 
             Review review = new Review();
 
+            JSONObject obj = null;
 
-            String text = null;
             try {
-                text = reviewsJSON.getJSONObject(i).getString("text");
-                review.setText(text);
+                obj = reviewsJSON.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String name = null;
+            try {
+                name = obj.getString("author_name");
+                review.setName(name);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String imgUrl = null;
+            try {
+                imgUrl = obj.getString("profile_photo_url");
+                review.setImgUrl(imgUrl);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
 
 
+            String text = null;
+            try {
+                text = obj.getString("text");
+                review.setText(text);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            String time = null;
+            try {
+                time = obj.getString("relative_time_description");
+                review.setTime(time);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            int rating = 5;
+            try {
+                rating = obj.getInt("rating");
+                review.setRating(rating);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
             reviews.add(review);
 
-
-
         }
-
-
-
 
     }
 

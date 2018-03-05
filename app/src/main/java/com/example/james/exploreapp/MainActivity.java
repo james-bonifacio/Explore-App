@@ -216,7 +216,6 @@ public class MainActivity extends AppCompatActivity {
 
         return toFormat.substring(0, 1).toUpperCase() + toFormat.substring(1);
 
-
     }
 
 
