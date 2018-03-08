@@ -30,7 +30,7 @@
                 android:layout_alignStart="@+id/tvTagline"
                 android:text="Ripley's Aquarium Of Canada"
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="#000000" />
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/tvTagline"
