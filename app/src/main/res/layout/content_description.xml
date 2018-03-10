@@ -154,6 +154,15 @@
             android:text="http://www.cntower.ca"
             android:textSize="14sp"/>
 
+        <android.support.v7.widget.RecyclerView
+            android:layout_below="@id/website_text_view"
+            android:padding="5dp"
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        </android.support.v7.widget.RecyclerView>
+
 
 
 

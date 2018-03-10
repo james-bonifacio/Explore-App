@@ -10,6 +10,8 @@ import android.preference.TwoStatePreference;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -50,6 +52,8 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
     private ExpandableTextView expandableTextView;
     private TextView tvName, tvRating, tvNumReviews, tvOpen, tvSuggestedDuration, tvAddress, tvPhoneNumber, tvWebsite;
     private RatingBar rbRating;
+    private ReviewAdapter adapter;
+    private RecyclerView recyclerView;
 
     private String placeId;
 
@@ -190,7 +194,13 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        ArrayList<Review> fuck = reviews;
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        adapter = new ReviewAdapter(this, reviews);
+
+        recyclerView.setAdapter(adapter);
 
     }
 
