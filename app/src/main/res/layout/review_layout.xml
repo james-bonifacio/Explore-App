@@ -4,89 +4,84 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="5dp">
 
-    <android.support.v7.widget.CardView
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="5dp">
+        android:padding="8dp">
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/tvName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:text="deepak jain"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/tvTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvName"
+            android:text="Web, Feb 28"
+            android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
+
+        <RatingBar
+            android:id="@+id/rating_rating_bar"
+            style="?android:attr/ratingBarStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvTime"
+            android:isIndicator="true"
+            android:numStars="5"
+            android:progressTint="@color/gold"
+            android:rating="4"
+            android:stepSize="0.1" />
+
+        <ScrollView
+            android:id="@+id/scroll_view_scroll_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="8dp">
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="10dp"
+            android:layout_below="@+id/rating_rating_bar">
 
-            <TextView
-                android:id="@+id/tvName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:text="deepak jain"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small"
-                android:textColor="@color/black" />
-
-            <TextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvName"
-                android:text="Web, Feb 28"
-                android:textAppearance="@style/Base.TextAppearance.AppCompat.Small" />
-
-            <RatingBar
-                android:id="@+id/rating_rating_bar"
-                style="?android:attr/ratingBarStyleSmall"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/tvTime"
-                android:isIndicator="true"
-                android:numStars="5"
-                android:progressTint="@color/gold"
-                android:rating="4"
-                android:stepSize="0.1" />
-
-            <ScrollView
-                android:id="@+id/scroll_view_scroll_view"
+            <com.ms.square.android.expandabletextview.ExpandableTextView
+                android:id="@+id/expandable_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_marginTop="10dp"
-                android:layout_below="@+id/rating_rating_bar">
+                android:background="#EFF0F2"
+                app:animDuration="200"
+                app:maxCollapsedLines="4">
 
-                <com.ms.square.android.expandabletextview.ExpandableTextView
-                    android:id="@+id/expandable_text_view"
+                <TextView
+                    android:id="@+id/expandable_text"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
                     android:background="#EFF0F2"
-                    app:animDuration="200"
-                    app:maxCollapsedLines="4">
+                    android:textColor="#666"
+                    android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/expandable_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginBottom="8dp"
-                        android:background="#EFF0F2"
-                        android:textColor="#666"
-                        android:textSize="14sp" />
+                <ImageButton
+                    android:id="@+id/expand_collapse"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|center_horizontal"
+                    android:background="#EFF0F2"
+                    android:padding="16dp" />
 
-                    <ImageButton
-                        android:id="@+id/expand_collapse"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom|center_horizontal"
-                        android:background="#EFF0F2"
-                        android:padding="16dp" />
-
-                </com.ms.square.android.expandabletextview.ExpandableTextView>
-            </ScrollView>
+            </com.ms.square.android.expandabletextview.ExpandableTextView>
+        </ScrollView>
 
 
-        </RelativeLayout>
+    </RelativeLayout>
 
-    </android.support.v7.widget.CardView>
 
 </LinearLayout>
