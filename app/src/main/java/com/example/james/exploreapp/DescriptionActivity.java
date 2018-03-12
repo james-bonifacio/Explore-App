@@ -3,6 +3,7 @@ package com.example.james.exploreapp;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.media.Rating;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +19,12 @@ import android.view.View;
 import android.widget.RatingBar;
 import android.widget.TextView;
 
+import com.bumptech.glide.request.RequestOptions;
+import com.glide.slider.library.Animations.DescriptionAnimation;
+import com.glide.slider.library.SliderLayout;
+import com.glide.slider.library.SliderTypes.BaseSliderView;
+import com.glide.slider.library.SliderTypes.TextSliderView;
+import com.glide.slider.library.Tricks.ViewPagerEx;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -47,13 +54,15 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 
-public class DescriptionActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class DescriptionActivity extends AppCompatActivity implements OnMapReadyCallback, BaseSliderView.OnSliderClickListener,
+        ViewPagerEx.OnPageChangeListener  {
 
     private ExpandableTextView expandableTextView;
     private TextView tvName, tvRating, tvNumReviews, tvOpen, tvSuggestedDuration, tvAddress, tvPhoneNumber, tvWebsite;
     private RatingBar rbRating;
     private ReviewAdapter adapter;
     private RecyclerView recyclerView;
+    private SliderLayout sliderLayout;
 
     private String placeId;
 
@@ -116,6 +125,33 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
                 .title(name));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(placeLocation));
         googleMap.animateCamera(CameraUpdateFactory.zoomTo(13), 1000, null);
+
+    }
+
+    @Override
+    protected void onStop() {
+
+        sliderLayout.stopAutoCycle();
+        super.onStop();
+    }
+
+    @Override
+    public void onSliderClick(BaseSliderView baseSliderView) {
+
+    }
+
+    @Override
+    public void onPageScrolled(int i, float v, int i1) {
+
+    }
+
+    @Override
+    public void onPageSelected(int i) {
+
+    }
+
+    @Override
+    public void onPageScrollStateChanged(int i) {
 
     }
 
@@ -202,6 +238,35 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
 
         recyclerView.setAdapter(adapter);
 
+        sliderLayout = findViewById(R.id.slider);
+
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions
+                .centerCrop();
+
+        for (int i = 0; i < images.size(); i++) {
+
+            TextSliderView sliderView = new TextSliderView(this);
+            sliderView
+                    .image(images.get(i))
+                    .setRequestOption(requestOptions)
+                    .setBackgroundColor(Color.WHITE)
+                    .setProgressBarVisible(true)
+                    .setOnSliderClickListener(this);
+
+            sliderLayout.addSlider(sliderView);
+
+        }
+
+        sliderLayout.setPresetTransformer(SliderLayout.Transformer.Accordion);
+
+        sliderLayout.setPresetIndicator(SliderLayout.PresetIndicators.Center_Bottom);
+        sliderLayout.setCustomAnimation(new DescriptionAnimation());
+        sliderLayout.setDuration(4000);
+        sliderLayout.addOnPageChangeListener(this);
+
+
+
     }
 
     private String generateCustomSearchUrl(String locationName) {
@@ -267,6 +332,8 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+
+            imageUrl = getImgUrl(imageUrl);
             images.add(imageUrl);
         }
 
@@ -472,6 +539,11 @@ public class DescriptionActivity extends AppCompatActivity implements OnMapReady
 
         return object;
 
+    }
+
+    private String getImgUrl (String photoRef) {
+
+        return "https://maps.googleapis.com/maps/api/place/photo?maxwidth=1440&photoreference=" + photoRef + "&key=AIzaSyBME8XX7Bml-QRTX_TX0o7jskALXHrXHcw";
     }
 
 }

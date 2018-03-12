@@ -13,8 +13,14 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
+        <com.glide.slider.library.SliderLayout
+            android:id="@+id/slider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"/>
+
         <TextView
             android:id="@+id/name_text_view"
+            android:layout_below="@id/slider"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
