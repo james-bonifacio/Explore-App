@@ -35,6 +35,7 @@ public class RouteActivity extends AppCompatActivity {
     private int locationsToAdd = 3;
     private String mode = "transit";
     private String startLocation;
+    private String routeType;
 
     RecyclerView recyclerView;
     RouteAdapter adapter;
@@ -71,10 +72,19 @@ public class RouteActivity extends AppCompatActivity {
         startLocation  = (String) this.getIntent().getExtras().get("City");
 
         currOrigin = startLocation;
+        routeType = "random";
 
         String url = createURL(startLocation, locations.get(0).getName(), time);
 
-        new DirectionTask().execute( url );
+
+        switch (routeType) {
+
+            case "random":
+                new DirectionTask().execute(url);
+                break;
+
+        }
+
 
     }
 
