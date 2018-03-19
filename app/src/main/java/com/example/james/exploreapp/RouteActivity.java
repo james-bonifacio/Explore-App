@@ -88,6 +88,9 @@ public class RouteActivity extends AppCompatActivity {
             case "best rated":
                 new BestRatedRouteTask().execute(url);
                 break;
+            default:
+                new RandomRouteTask().execute(url);
+                break;
         }
 
 
