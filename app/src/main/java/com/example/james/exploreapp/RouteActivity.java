@@ -36,6 +36,7 @@ public class RouteActivity extends AppCompatActivity {
     private String mode = "transit";
     private String startLocation;
     private String routeType;
+    private Boolean useDefaultStartLocation;
 
     RecyclerView recyclerView;
     RouteAdapter adapter;
@@ -69,10 +70,16 @@ public class RouteActivity extends AppCompatActivity {
 
         numScheduled = 0;
 
-        startLocation  = (String) this.getIntent().getExtras().get("City");
+
 
         currOrigin = startLocation;
         routeType = "random";
+        useDefaultStartLocation = true;
+
+        if (useDefaultStartLocation) {
+            startLocation  = (String) this.getIntent().getExtras().get("City");
+        }
+
 
         String url = createURL(startLocation, locations.get(0).getName(), time);
 
